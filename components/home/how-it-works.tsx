@@ -64,7 +64,7 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto relative">
           {steps.map((step, index) => {
             return (
-              <div className="flex items-center">
+              <div className="flex items-center" key={index}>
                 <StepItem key={index} {...step} />
                 {index < steps.length - 1 && (
                   <div className="hidden md:block">
