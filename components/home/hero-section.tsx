@@ -15,8 +15,14 @@ export default function HeroSection() {
         </div>
       </div>
       <h1 className="py-6 text-center">
-        Transform PDFs into <span>concise</span> summaries
+        Transform PDFs into{" "}
+        <span className="relative inline-block p-1">
+          <span className="absolute inset-0 bg-rose-200/50 -rotate-3 -z-10 rounded-lg "></span>
+          concise
+        </span>{" "}
+        summaries
       </h1>
+
       <h2 className="text-center px-4 text-lg sm:text-xl lg:text-2xl lg:px-0 lg:max-w-4xl text-gray-600">
         Get a beautiful summary reel of the document in seconds.
       </h2>
