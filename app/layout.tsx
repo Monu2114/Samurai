@@ -3,6 +3,7 @@ import { Source_Sans_3 as FontSans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
+import { Toaster } from "@/components/ui/sonner";
 import {
   ClerkProvider,
   SignInButton,
@@ -39,6 +40,7 @@ export default function RootLayout({
 
             <Footer />
           </div>
+          <Toaster position="top-right" />
         </body>
       </html>
     </ClerkProvider>
