@@ -1,9 +1,10 @@
 "use client";
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadInputForm from "./upload-form-input";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 
 import { z } from "zod";
+import { generateSummmary } from "@/actions/upload-actions";
 
 const schema = z.object({
   file: z
@@ -53,6 +54,9 @@ export default function UploadForm() {
 
     const response = await startUpload([file]);
     if (!response) return;
+
+    const summary = await generateSummmary(response);
+    console.log(summary);
   };
 
   return (
