@@ -1,20 +1,19 @@
 "use server";
+
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { generateSummaryFromOpenAI } from "@/lib/openai";
-export async function generateSummmary(
-  uploadResponse: [
-    {
-      serverData: {
-        userId: string;
-        file: {
-          url: string;
-          name: string;
-        };
-      };
-    }
-  ]
-) {
-  if (!uploadResponse) {
+import { generateSummaryFromGemini } from "@/lib/gemini";
+
+export async function generateSummmary(uploadResponse: {
+  serverData: {
+    userId: string;
+    file: {
+      url: string;
+      name: string;
+    };
+  };
+}) {
+  if (!uploadResponse || !uploadResponse.serverData?.file?.url) {
     return {
       success: false,
       message: "File upload failed",
@@ -22,42 +21,51 @@ export async function generateSummmary(
     };
   }
 
-  const {
-    serverData: {
-      userId,
-      file: { url: pdfUrl, name: fileName },
-    },
-  } = uploadResponse[0];
+  const pdfUrl = uploadResponse.serverData.file.url;
 
-  if (!pdfUrl) {
-    return {
-      success: false,
-      message: "File upload failed",
-      data: null,
-    };
-  }
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
-    console.log({ pdfText });
     let summary;
 
     try {
       summary = await generateSummaryFromOpenAI(pdfText);
-      console.log({ summary });
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error && error.message === "RATE_LIMIT_EXCEEDED") {
+        try {
+          summary = await generateSummaryFromGemini(pdfText);
+        } catch {
+          return {
+            success: false,
+            message: "AI providers exhausted. Please try again later.",
+            data: null,
+          };
+        }
+      } else {
+        return {
+          success: false,
+          message: "Failed to generate summary with OpenAI.",
+          data: null,
+        };
+      }
     }
 
-    if (!summary)
+    if (!summary) {
       return {
         success: false,
-        message: "Failed to generate summary",
+        message: "Failed to generate summary.",
         data: null,
       };
+    }
+
+    return {
+      success: true,
+      message: "Summary generated successfully.",
+      data: { summary },
+    };
   } catch (err) {
     return {
       success: false,
-      message: "File upload failed",
+      message: "Error processing the PDF.",
       data: null,
     };
   }
