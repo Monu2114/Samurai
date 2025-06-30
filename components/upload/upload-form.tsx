@@ -5,7 +5,7 @@ import UploadInputForm from "./upload-form-input";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { z } from "zod";
-import { generateSummmary } from "@/actions/upload-actions";
+import { generateSummmary, storePdfSummary } from "@/actions/upload-actions";
 
 const schema = z.object({
   file: z
@@ -61,7 +61,15 @@ export default function UploadForm() {
     setLoading(false);
 
     if (result.success && result.data) {
+      let storedSummary;
       toast.success("✅ Summary generated successfully!");
+      storedSummary = await storePdfSummary({
+        originalFileUrl: uploadResponse[0].url,
+        summaryText: result.data.summary, // Assuming result.data = { summary: "..." }
+        title: uploadResponse[0].name, // Or derive title however you prefer
+        fileName: uploadResponse[0].name,
+      });
+      toast.success("Summary has been successfully summarised and saved !");
     } else {
       toast.error(result.message || "Summary generation failed.");
     }
