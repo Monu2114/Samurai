@@ -6,6 +6,7 @@ import { generateSummaryFromGemini } from "@/lib/gemini";
 import { getDbConnection } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { formatFileNameAsTitle } from "@/utils/format-utils";
+import { revalidatePath } from "next/cache";
 
 interface PDFSummaryType {
   userId: string;
@@ -94,10 +95,13 @@ async function saveSummaryPdf({
 }: PDFSummaryType) {
   try {
     const sql = await getDbConnection();
-    await sql`
+    const result = await sql`
       INSERT INTO pdf_summaries (user_id, original_file_url, summary_text, status, title, file_name)
-      VALUES (${userId}, ${originalFileUrl}, ${summaryText}, 'completed', ${title}, ${fileName});
+      VALUES (${userId}, ${originalFileUrl}, ${summaryText}, 'completed', ${title}, ${fileName})
+      RETURNING id;;
     `;
+    console.log(result);
+    return result[0];
   } catch (error) {
     console.error("Error saving pdf summary", error);
     throw error;
@@ -110,6 +114,7 @@ export async function storePdfSummary({
   title,
   fileName,
 }: Omit<PDFSummaryType, "userId">) {
+  let savedSummary;
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -119,18 +124,13 @@ export async function storePdfSummary({
       };
     }
 
-    await saveSummaryPdf({
+    savedSummary = await saveSummaryPdf({
       userId,
       originalFileUrl,
       summaryText,
       title,
       fileName,
     });
-
-    return {
-      success: true,
-      message: "PDF summary saved successfully.",
-    };
   } catch (error) {
     return {
       success: false,
@@ -138,4 +138,11 @@ export async function storePdfSummary({
         error instanceof Error ? error.message : "Error saving PDF summary",
     };
   }
+  // revalidate our cache
+  revalidatePath(`/summaries/${savedSummary.id}`);
+  return {
+    success: true,
+    message: "PDF summary saved successfully.",
+    data: savedSummary ?? null, // Be explicit if for some reason saveSummaryPdf fails silently
+  };
 }

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { z } from "zod";
 import { generateSummmary, storePdfSummary } from "@/actions/upload-actions";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   file: z
@@ -18,6 +19,8 @@ const schema = z.object({
 });
 
 export default function UploadForm() {
+  const router = useRouter();
+
   const [isLoading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -61,20 +64,29 @@ export default function UploadForm() {
     setLoading(false);
 
     if (result.success && result.data) {
-      let storedSummary;
       toast.success("✅ Summary generated successfully!");
-      storedSummary = await storePdfSummary({
-        originalFileUrl: uploadResponse[0].url,
-        summaryText: result.data.summary, // Assuming result.data = { summary: "..." }
-        title: uploadResponse[0].name, // Or derive title however you prefer
-        fileName: uploadResponse[0].name,
-      });
-      toast.success("Summary has been successfully summarised and saved !");
+      try {
+        let storedSummary = await storePdfSummary({
+          originalFileUrl: uploadResponse[0].url,
+          summaryText: result.data.summary, // Assuming result.data = { summary: "..." }
+          title: uploadResponse[0].name, // Or derive title however you prefer
+          fileName: uploadResponse[0].name,
+        });
+        toast.success("Summary has been successfully summarised and saved !");
+        formRef.current?.reset();
+        if (storedSummary.success && storedSummary.data?.id) {
+          router.push(`/summaries/${storedSummary.data.id}`);
+        } else {
+          toast.error("Failed to save summary. Please try again.");
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     } else {
       toast.error(result.message || "Summary generation failed.");
     }
-
-    formRef.current?.reset();
   };
 
   return (
