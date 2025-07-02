@@ -5,6 +5,7 @@ export interface SummaryInput {
   id: UUID;
   user_id: string;
   original_file_url: string;
+  summary_text: string;
   status: string;
   title: string;
   file_name: string;

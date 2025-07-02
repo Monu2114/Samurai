@@ -3,21 +3,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Plus } from "lucide-react";
 import SummaryCard from "@/components/summaries/summary-card";
+import { SummaryInput } from "@/types/summary";
+
 import { fetchSummaries } from "@/actions/fetch-summaries";
 import { auth } from "@clerk/nextjs/server";
-import { UUID } from "crypto";
-import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
+import EmptySummaryState from "@/components/summaries/empty-summary-state";
 
-interface SummaryInput {
-  //id,user_id,original_file_url,status,title,file_name,created_at
-  id: UUID;
-  user_id: string;
-  original_file_url: string;
-  status: string;
-  title: string;
-  file_name: string;
-  created_at: Timestamp;
-}
 export default async function DashboardPage() {
   const uploadLimit = 5;
   const { userId } = await auth();
@@ -65,11 +56,15 @@ export default async function DashboardPage() {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 sm:px-0">
-            {summaries.map((summary_info, index) => (
-              <SummaryCard key={index} summary={summary_info} />
-            ))}
-          </div>
+          {summaries.length === 0 ? (
+            <EmptySummaryState />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 sm:px-0">
+              {summaries.map((summary_info, index) => (
+                <SummaryCard key={index} summary={summary_info} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>
