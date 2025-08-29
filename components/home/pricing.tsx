@@ -1,6 +1,7 @@
-import { CheckIcon, Divide } from "lucide-react";
+import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { pricingPlans } from "@/utils/constants";
 
 type PriceType = {
   name: string;
@@ -11,48 +12,7 @@ type PriceType = {
   paymentLink: string;
   priceId: string;
 };
-const pricing = [
-  {
-    id: "free",
-    name: "Free",
-    description: "perfect for use",
-    price: 0,
-    items: [
-      "2 PDF summaries per month",
-      "Standard processing speed",
-      "Email support",
-    ],
-    paymentLink: "",
-    priceId: "",
-  },
-  {
-    name: "Basic",
-    description: "perfect for ocassional use",
-    price: 9,
-    items: [
-      "10 PDF summaries per month",
-      "Standard processing speed",
-      "Email support",
-    ],
-    id: "basic",
-    paymentLink: "",
-    priceId: "",
-  },
-  {
-    name: "Pro",
-    description: "For professionals and teams",
-    price: 19,
-    items: [
-      "Unlimited PDF summaries",
-      "Priority processing",
-      "24/7 priority support",
-      "Markdown Export",
-    ],
-    id: "pro",
-    paymentLink: "",
-    priceId: "",
-  },
-];
+
 
 const PricingCard = ({
   name,
@@ -92,17 +52,12 @@ const PricingCard = ({
         ))}
       </ul>
 
-      {/* {paymentLink ? (
-        <Link
-          href={paymentLink}
-          className="mt-4 inline-block px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
-        >
-          Buy Now
-        </Link>
-      ) : null} */}
       <Link
-        href={""}
-        className=" inline-block px-4 py-2 text-center bg-rose-500 text-white rounded-lg hover:bg-rose-700 duration-200 transition"
+        href={paymentLink}
+        className={cn(
+          "mt-4 px-4 py-2 inline-flex items-center justify-center bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition",
+          paymentLink ? "" : "invisible"
+        )}
       >
         Buy Now
       </Link>
@@ -119,7 +74,7 @@ export default function PricingSection() {
             Pricing
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            {pricing.map((type, index) => {
+            {pricingPlans.map((type, index) => {
               return <PricingCard {...type} key={index} />;
             })}
           </div>

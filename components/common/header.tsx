@@ -1,6 +1,7 @@
 import NavLink from "./nav-link";
 import { FileText } from "lucide-react";
 import { Button } from "../ui/button";
+import PlanBadge from "./plan-badge";
 import {
   ClerkProvider,
   SignInButton,
@@ -35,8 +36,7 @@ export default function Header() {
         <SignedIn>
           <div className="flex gap-2 items-center">
             <NavLink href="/upload">Upload a PDF</NavLink>
-            <div>Pro</div>
-
+            <PlanBadge />
             <UserButton />
           </div>
         </SignedIn>
