@@ -8,7 +8,6 @@ import { formatDistanceToNow } from "date-fns";
 import { formatFileNameAsTitle } from "../../utils/format-utils";
 import Link from "next/link";
 export default function SummaryCard({ summary }: { summary: SummaryInput }) {
-  const handleDialog = () => {};
   const time = 2;
   return (
     <div>
