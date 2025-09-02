@@ -4,14 +4,24 @@ import Link from "next/link";
 import { ArrowRight, Plus } from "lucide-react";
 import SummaryCard from "@/components/summaries/summary-card";
 import { SummaryInput } from "@/types/summary";
+import { redirect } from "next/navigation";
 
 import { fetchSummaries } from "@/actions/fetch-summaries";
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import EmptySummaryState from "@/components/summaries/empty-summary-state";
+import { hasReachedUploadLimit } from "@/lib/user";
 
 export default async function DashboardPage() {
-  const uploadLimit = 5;
-  const { userId } = await auth();
+  const user = await currentUser();
+  const userId = user?.id;
+
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const { hasReachedLimit, uploadLimit } = await hasReachedUploadLimit(
+    userId as string
+  );
 
   const summaries: SummaryInput[] = await fetchSummaries({ user_id: userId });
   console.log(summaries);
@@ -40,22 +50,25 @@ export default async function DashboardPage() {
               </Link>
             </Button>
           </div>
-          <div className="mb-6">
-            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-800">
-              <p className="text-sm">
-                You've reached the limit of {uploadLimit} uploads on the Basic
-                plan.{" "}
-                <Link
-                  href="/#pricing"
-                  className="text-rose-800 underline font-medium underline-offset-4 inline-flex items-center"
-                >
-                  Click here to upgrade to PRO{" "}
-                  <ArrowRight className="w-4 h-4 inline-block" />
-                </Link>{" "}
-                for unlimited uploads.
-              </p>
+          {hasReachedLimit && (
+            <div className="mb-6">
+              <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-800">
+                <p className="text-sm">
+                  You've reached the limit of {uploadLimit} uploads on the Basic
+                  plan.{" "}
+                  <Link
+                    href="/#pricing"
+                    className="text-rose-800 underline font-medium underline-offset-4 inline-flex items-center"
+                  >
+                    Click here to upgrade to PRO{" "}
+                    <ArrowRight className="w-4 h-4 inline-block" />
+                  </Link>{" "}
+                  for unlimited uploads.
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+
           {summaries.length === 0 ? (
             <EmptySummaryState />
           ) : (

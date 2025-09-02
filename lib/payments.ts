@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { getDbConnection } from "./db";
+
 export async function handleCheckOutSessionCompleted({
   session,
   stripe,
