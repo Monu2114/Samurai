@@ -2,6 +2,8 @@ import { CheckIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { pricingPlans } from "@/utils/constants";
+import { MotionSection } from "../common/motion-wrapper";
+import { containerVariants } from "@/utils/constants";
 
 type PriceType = {
   name: string;
@@ -12,7 +14,6 @@ type PriceType = {
   paymentLink: string;
   priceId: string;
 };
-
 
 const PricingCard = ({
   name,
@@ -25,7 +26,7 @@ const PricingCard = ({
   return (
     <div
       className={cn(
-        "relative w-full max-w-lg p-6 border hover:border-rose-500 rounded-xl shadow-md flex flex-col gap-4 justify-between h-full",
+        "relative w-full p-8 border hover:border-rose-500 rounded-xl shadow-md flex flex-col gap-6 justify-between h-full",
         id === "pro" && "border-rose-500 border-2"
       )}
     >
@@ -67,19 +68,24 @@ const PricingCard = ({
 
 export default function PricingSection() {
   return (
-    <section>
-      <div className="py-12 lg:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 items-center">
+    <MotionSection
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
+      <div className="py-12 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 items-center w-full justify-center">
           <h2 className="text-xl font-bold md:text-2xl text-rose-500 uppercase">
             Pricing
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 w-full max-w-6xl">
             {pricingPlans.map((type, index) => {
               return <PricingCard {...type} key={index} />;
             })}
           </div>
         </div>
       </div>
-    </section>
+    </MotionSection>
   );
 }
