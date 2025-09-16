@@ -3,6 +3,7 @@
 import { BrainCircuit, FileOutput, FileText, MoveRight } from "lucide-react";
 import { ReactNode } from "react";
 import { MotionDiv } from "../common/motion-wrapper";
+import { Variants } from "framer-motion";
 import { containerVariants, itemVariants } from "@/utils/constants";
 
 type Step = {
@@ -32,7 +33,7 @@ const steps: Step[] = [
 function StepItem({ icon, label, description }: Step) {
   return (
     <MotionDiv
-      variants={itemVariants}
+      variants={itemVariants as Variants}
       className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-xs border border-white/10 hover:border-rose-500/15 transition-colors group w-full"
     >
       <div className="flex flex-col gap-4 h-full justify-center items-center">

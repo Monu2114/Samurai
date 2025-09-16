@@ -1,4 +1,6 @@
 import { isDev } from "./helper";
+import { Variants } from "framer-motion";
+
 export const pricingPlans = [
   {
     name: "Basic",
@@ -67,29 +69,26 @@ export const DEMO_SUMMARY = `# Deep Learning in Action: Object Detection and Fea
 💡 • 🚀 This assignment empowers you to build and apply deep learning models for object detection and feature extraction, essential skills for a career in AI!
 `;
 
-export const containerVariants = {
+export const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
+      staggerChildren: 0.1,
     },
   },
 };
 
-export const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
+export const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
+    y: 0,
     transition: {
       type: "spring",
       damping: 15,
-      stiffness: 50,
-      duration: 0.8,
+      stiffness: 100,
+      duration: 0.5,
     },
   },
 };

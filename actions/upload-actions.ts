@@ -16,25 +16,20 @@ interface PDFSummaryType {
   fileName: string;
 }
 
-export async function generateSummmary(uploadResponse: {
-  serverData: {
+export async function generateSummary(uploadResponse: {
+  url: string;
+  name: string;
+  serverData?: {
     userId: string;
-    file: {
-      url: string;
-      name: string;
-    };
+    file: { url: string; name: string };
   };
 }) {
-  if (!uploadResponse || !uploadResponse.serverData?.file?.url) {
-    return {
-      success: false,
-      message: "File upload failed",
-      data: null,
-    };
-  }
+  const pdfUrl = uploadResponse.serverData?.file?.url ?? uploadResponse.url;
+  const fileName = uploadResponse.serverData?.file?.name ?? uploadResponse.name;
 
-  const pdfUrl = uploadResponse.serverData.file.url;
-  const fileName = uploadResponse.serverData.file.name;
+  if (!pdfUrl) {
+    return { success: false, message: "No PDF URL found.", data: null };
+  }
 
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
@@ -44,45 +39,23 @@ export async function generateSummmary(uploadResponse: {
       summary = await generateSummaryFromOpenAI(pdfText);
     } catch (error) {
       if (error instanceof Error && error.message === "RATE_LIMIT_EXCEEDED") {
-        try {
-          summary = await generateSummaryFromGemini(pdfText);
-        } catch {
-          return {
-            success: false,
-            message: "AI providers exhausted. Please try again later.",
-            data: null,
-          };
-        }
+        summary = await generateSummaryFromGemini(pdfText);
       } else {
-        return {
-          success: false,
-          message: "Failed to generate summary with OpenAI.",
-          data: null,
-        };
+        return { success: false, message: "AI summary failed.", data: null };
       }
     }
 
     if (!summary) {
-      return {
-        success: false,
-        message: "Failed to generate summary.",
-        data: null,
-      };
+      return { success: false, message: "Empty summary.", data: null };
     }
-
-    const formattedFileName = formatFileNameAsTitle(fileName);
 
     return {
       success: true,
       message: "Summary generated successfully.",
-      data: { title: formattedFileName, summary },
+      data: { title: formatFileNameAsTitle(fileName), summary },
     };
   } catch (err) {
-    return {
-      success: false,
-      message: "Error processing the PDF.",
-      data: null,
-    };
+    return { success: false, message: "Error processing PDF.", data: null };
   }
 }
 

@@ -9,15 +9,19 @@ import {
   MotionH1,
   MotionH2,
 } from "../common/motion-wrapper";
+import { Variants } from "framer-motion";
 
-const buttonVariants = {
-  scale: 1.05,
-  transition: {
-    type: "spring",
-    stiffness: 300,
-    damping: 10,
+const buttonVariants: Variants = {
+  hover: {
+    scale: 1.05,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 10,
+    },
   },
 };
+
 import { containerVariants, itemVariants } from "../../utils/constants";
 export default function HeroSection() {
   return (
@@ -51,7 +55,7 @@ export default function HeroSection() {
       >
         Get a beautiful summary reel of the document in seconds.
       </MotionH2>
-      <MotionDiv variants={itemVariants} whileHover={buttonVariants}>
+      <MotionDiv variants={buttonVariants} whileHover="hover">
         <Button
           variant={"link"}
           className="text-white mt-6 text-base sm:text-lg lg:text-xl rounded-full px-8 sm:px-10 lg:px-12 py-6  lg:mt-12 bg-linear-to-r from-slate-900 to-rose-500 hover:from-rose-500 hover:to-slate-900 transition-all duration-300 hover:no-underline shadow-lg"
