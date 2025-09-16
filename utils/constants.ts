@@ -1,4 +1,4 @@
-import { isDev } from "./helper";
+// import { isDev } from "./helper";
 import { Variants } from "framer-motion";
 
 export const pricingPlans = [
@@ -12,10 +12,9 @@ export const pricingPlans = [
       "Email support",
     ],
     id: "basic",
-    paymentLink: isDev
-      ? "https://buy.stripe.com/test_7sY6oH8VEgmf6v3aWd33W01"
-      : "",
-    priceId: isDev ? "price_1S0ycHFa1E1RjCDc1aysspNl" : "",
+    paymentLink:
+      "https://buy.stripe.com/test_7sY6oH8VEgmf6v3aWd33W01",
+    priceId: "price_1S0ycHFa1E1RjCDc1aysspNl",
   },
   {
     name: "Pro",
@@ -28,10 +27,8 @@ export const pricingPlans = [
       "Markdown Export",
     ],
     id: "pro",
-    paymentLink: isDev
-      ? "https://buy.stripe.com/test_5kQ28r1tcc5Zg5D1lD33W00"
-      : "",
-    priceId: isDev ? "price_1S0yfUFa1E1RjCDc0nco4fls" : "",
+    paymentLink:"https://buy.stripe.com/test_5kQ28r1tcc5Zg5D1lD33W00",
+    priceId: "price_1S0yfUFa1E1RjCDc0nco4fls",
   },
 ];
 
