@@ -14,7 +14,14 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("upload completed for user id", metadata.userId);
       console.log("file url", file.ufsUrl);
-      return { userId: metadata.userId, file };
+
+      return {
+        userId: metadata.userId,
+        fileUrl: file.ufsUrl, // ✅ safe string
+        fileName: file.name, // ✅ safe string
+        fileSize: file.size, // ✅ safe number
+        fileType: file.type, // ✅ safe string
+      };
     }),
 } satisfies FileRouter;
 
