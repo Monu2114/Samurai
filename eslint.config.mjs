@@ -11,14 +11,8 @@ const compat = new FlatCompat({
 
 export default [
   ...compat.config({
-    extends: [
-      "next/core-web-vitals",
-      "next/typescript",
-      "plugin:prettier/recommended", // ✅ recommended way
-    ],
-    plugins: ["prettier"],
+    extends: ["next/core-web-vitals", "next/typescript"],
     rules: {
-      "prettier/prettier": "error",
       "react/no-escape-entities": "off",
     },
   }),
